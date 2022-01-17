@@ -8,7 +8,6 @@ import java.util.List;
 public abstract class People {
     private String userName;
     private String password;
-    private Database db;
 
     public People(String userName, String password) {
         this.userName = userName;
@@ -23,13 +22,8 @@ public abstract class People {
         return password;
     }
 
-    public List<Inventory> getInventory() {
-        connectToDB();
-        return db.getInventoryList();
-    }
+    public void  getInventory() { }
 
-    // a template method to create db locally
-    private void connectToDB() {
-        db = new Database();
-    }
+
 }
+

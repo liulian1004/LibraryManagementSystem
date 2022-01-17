@@ -22,5 +22,4 @@ public abstract class Inventory {
     public Type getType() {
         return type;
     }
-
 }
