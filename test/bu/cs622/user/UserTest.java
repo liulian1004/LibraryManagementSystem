@@ -1,5 +1,7 @@
 package bu.cs622.user;
 
+import bu.cs622.db.IPersistence;
+import bu.cs622.mock.MockDB;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,24 +14,24 @@ import java.util.Arrays;
 import java.util.List;
 
 import static bu.cs622.Main.connectDB;
+import static org.mockito.Mockito.spy;
 
 class UserTest {
 
     private User user;
-
+    private IPersistence spyDb;
     @BeforeEach
     public void setUp() {
-        connectDB();
-        user = new User("user","123");
+        spyDb= new MockDB();
+        spyDb = spy(spyDb);
+        user = new User("user","123", spyDb);
     }
 
     @Test
     void testGetInventory() {
         List<List<String>> inventories = user.getInventory();
         List<List<String>> expected = new ArrayList<>();
-        expected.add(Arrays.asList("Little Prince", "BOOK"));
-        expected.add(Arrays.asList("Fashion World", "MAGAZINE"));
-        expected.add(Arrays.asList("Clean code", "EBOOK"));
+        expected.add(Arrays.asList("test book1", "BOOK"));
         Assert.assertEquals(expected, inventories);
 
     }

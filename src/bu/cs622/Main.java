@@ -1,6 +1,7 @@
 package bu.cs622;
 
 import bu.cs622.db.Database;
+import bu.cs622.db.IPersistence;
 import bu.cs622.user.Admin;
 import bu.cs622.user.People;
 import bu.cs622.user.User;
@@ -11,7 +12,9 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-    public static Database db;
+//    public static Database db;
+    public static IPersistence db;
+
     public static People people;
     public static void main(String[] args) {
 
@@ -37,7 +40,7 @@ public class Main {
 
     private static void adminLogin() {
         connectDB();
-        people = new Admin("Admin","123");
+        people = new Admin("Admin","123", db);
         System.out.println("Please type 1 for checking inventory, type 2 for adding new inventory, type 3 for exiting the system");
         while(true){
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -103,7 +106,7 @@ public class Main {
 
     private static void userLogin() {
         connectDB();
-        people = new  User("User1","123");
+        people = new  User("User1","123", db);
         while(true){
             System.out.println("Please type 1 for checking inventory, type 2 for exiting the system");
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

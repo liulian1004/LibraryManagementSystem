@@ -1,17 +1,18 @@
 package bu.cs622.user;
 
 import bu.cs622.UserDefinedException;
+import bu.cs622.db.IPersistence;
 import bu.cs622.inventory.*;
 
 import java.util.*;
 
-import static bu.cs622.Main.db;
+//import static bu.cs622.Main.db;
 
 public class Admin extends People {
 
-    // Admin can't register by system, here is the template method
-    public Admin(String userName, String password) {
-        super(userName, password);
+
+    public Admin(String userName, String password, IPersistence idb) {
+        super(userName, password, idb);
     }
 
     public List<List<String>> getInventory() {

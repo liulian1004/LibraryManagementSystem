@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Database {
+public class Database implements IPersistence {
     private List<Inventory> inventoryList;
     private List<User> users;
 
@@ -46,10 +46,13 @@ public class Database {
             throw new UserDefinedException("File does not exist");
         }
     }
+
+    @Override
     public List<Inventory> getInventoryList() {
         return inventoryList;
     }
 
+    @Override
     public void addInventory(Inventory inv) throws UserDefinedException {
         inventoryList.add(inv);
         updateFile();

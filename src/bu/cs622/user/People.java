@@ -1,15 +1,19 @@
 package bu.cs622.user;
 
+import bu.cs622.db.IPersistence;
+
 import java.util.*;
 
 
 public abstract class People {
     private String userName;
     private String password;
+    protected final IPersistence db;
 
-    public People(String userName, String password) {
+    public People(String userName, String password, IPersistence idb) {
         this.userName = userName;
         this.password = password;
+        db = idb;
     }
 
     public String getUserName() {
