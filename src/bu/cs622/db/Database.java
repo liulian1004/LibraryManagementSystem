@@ -1,32 +1,76 @@
 package bu.cs622.db;
 
-import bu.cs622.inventory.Book;
-import bu.cs622.inventory.Inventory;
-import bu.cs622.inventory.Magazin;
-import bu.cs622.inventory.Type;
-import bu.cs622.user.People;
+import bu.cs622.UserDefinedException;
+import bu.cs622.inventory.*;
 import bu.cs622.user.User;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Database {
     private List<Inventory> inventoryList;
     private List<User> users;
 
-    public Database() {
+    public Database() throws UserDefinedException {
         inventoryList = new ArrayList<>();
-        inventoryList.add(new Book("Little Prince",5, Type.Book));
-        inventoryList.add(new Magazin("Fashion World",5, Type.Magazine));
-        inventoryList.add(new Magazin("Clean code",5, Type.Ebook));
-        inventoryList.add(new Magazin("Effective Java",0, Type.Book));
-
+        users = new ArrayList<>();
+        ReadFile();
 
     }
+    private void ReadFile() throws UserDefinedException {
+        try{
+            File file = new File("inventory.txt");
+            Scanner reader = new Scanner(file);
+            while(reader.hasNextLine()){
+                String[] cur = reader.nextLine().split(",");
+                String name = cur[0];
+                int number = Integer.valueOf(cur[1]);
+                Type t = Type.valueOf(cur[2]);
+                Inventory inv;
+                if(t == Type.BOOK){
+                    inv = new Book(name, number,t);
+                }else if (t == Type.EBOOK){
+                    inv = new Ebook(name, number,t);
+                }else {
+                    inv = new Magazine(name, number, t);
+                }
 
+                if(inv != null) {
+                    inventoryList.add(inv);
+                }
+            }
+            reader.close();
+        }catch (Exception e){
+            throw new UserDefinedException("File does not exist");
+        }
+    }
     public List<Inventory> getInventoryList() {
         return inventoryList;
     }
+
+    public void addInventory(Inventory inv) throws UserDefinedException {
+        inventoryList.add(inv);
+        updateFile();
+    }
+
+    private void updateFile () throws UserDefinedException{
+        try{
+            File file = new File("inventory.txt");
+            FileWriter writer = new FileWriter(file);
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+            for(Inventory inv: inventoryList){
+                String line = inv.getName()+","+inv.getNumber()+","+inv.getType().toString();
+                bufferedWriter.write(line);
+                bufferedWriter.newLine();
+            }
+            bufferedWriter.close();
+        }catch (Exception e){
+            throw new UserDefinedException("File does not exist");
+        }
+    }
+
 
     public List<User> getUsers() {
         return users;
@@ -40,8 +84,6 @@ public class Database {
         this.users = users;
     }
 
-    public void addInventory(Inventory inv){
-        inventoryList.add(inv);
-    }
+
 
 }

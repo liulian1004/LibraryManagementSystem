@@ -1,8 +1,9 @@
 package bu.cs622.user;
 
+import bu.cs622.UserDefinedException;
 import bu.cs622.inventory.*;
 
-import java.awt.*;
+import java.util.*;
 
 import static bu.cs622.Main.db;
 
@@ -13,27 +14,34 @@ public class Admin extends People {
         super(userName, password);
     }
 
-    public void  getInventory() {
-        System.out.println("============Inventory List for Admin=============");
-        System.out.printf("%-22s%-22s%-22s\n","Name","Type","Number");
-        for (Inventory in : db.getInventoryList()){
-           System.out.printf("%-22s%-22s%-22s\n",in.getName(),in.getType().name(),in.getNumber());
+    public List<List<String>> getInventory() {
+        List<List<String>> inventories = new ArrayList<>();
+        for(Inventory in: db.getInventoryList()){
+            List<String> inventory =  new ArrayList<>();
+            inventory.add(in.getName());
+            inventory.add(in.getType().name());
+            inventory.add(String.valueOf(in.getNumber()));
+            inventories.add(inventory);
         }
+        return inventories;
     }
-    public void addInventory(String name,String num, String type){
+    public void addInventory(String name,String num, String type) throws UserDefinedException {
         int number = Integer.valueOf(num);
-        //TODO: error hanlder for wrong type
-        Type t = Type.valueOf(type);
+        Type t;
+        try{
+            t = Type.valueOf(type.toUpperCase());
+        } catch (Exception e){
+            throw new UserDefinedException(String.format("The inventory type '%s' does not exist", type));
+        }
         Inventory inv;
-        if(t == Type.Book){
+        if(t == Type.BOOK){
            inv = new Book(name, number,t);
-        }else if (t == Type.Ebook){
+        }else if (t == Type.EBOOK){
             inv = new Ebook(name, number,t);
         }else {
-            inv = new Magazin(name, number, t);
+            inv = new Magazine(name, number, t);
         }
         db.addInventory(inv);
-        getInventory();
     }
 
 }

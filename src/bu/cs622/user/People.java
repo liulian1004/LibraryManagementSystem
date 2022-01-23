@@ -1,9 +1,7 @@
 package bu.cs622.user;
 
-import bu.cs622.db.Database;
-import bu.cs622.inventory.Inventory;
+import java.util.*;
 
-import java.util.List;
 
 public abstract class People {
     private String userName;
@@ -22,8 +20,7 @@ public abstract class People {
         return password;
     }
 
-    public void  getInventory() { }
-
+    public abstract List<List<String>> getInventory();
 
 }
 

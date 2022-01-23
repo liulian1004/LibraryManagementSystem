@@ -1,0 +1,5 @@
+Little Prince,5,BOOK
+Fashion World,5,MAGAZINE
+Clean code,5,EBOOK
+Effective Java,0,BOOK
+Test,4,MAGAZINE
