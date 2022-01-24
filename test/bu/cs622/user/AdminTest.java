@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 
 class AdminTest {
@@ -46,7 +48,13 @@ class AdminTest {
         Assert.assertEquals(expected, inventories);
     }
 
-    private void restDB(){
-
+    @Test
+    void testAddInventoryThrowError() {
+        Exception exception = assertThrows(UserDefinedException.class, () -> {
+            admin.addInventory("test book3", "5", "WrongType");
+        });
+        String exceptedMessage = String.format("The inventory type '%s' does not exist", "wrongType");
+        String actualMessage = exception.getMessage();
+        actualMessage.equals(exceptedMessage);
     }
 }

@@ -6,8 +6,6 @@ import bu.cs622.inventory.*;
 
 import java.util.*;
 
-//import static bu.cs622.Main.db;
-
 public class Admin extends People {
 
 
