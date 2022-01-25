@@ -93,6 +93,7 @@ public class Main {
                 try {
                     ((Admin)people).addInventory(name,number,type);
                     System.out.println("New inventory update success!");
+                    printInventory();
                     quitSystem();
                 } catch (UserDefinedException e) {
                     e.printStackTrace();
