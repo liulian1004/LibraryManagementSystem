@@ -1,5 +1,6 @@
 package bu.cs622.user;
 
+import bu.cs622.UserDefinedException;
 import bu.cs622.db.IPersistence;
 
 import java.util.*;
@@ -25,6 +26,8 @@ public abstract class People {
     }
 
     public abstract List<List<String>> getInventory();
+
+    public abstract void addInventory(String name,String num, String type) throws UserDefinedException;
 
 }
 

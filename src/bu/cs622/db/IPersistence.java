@@ -9,4 +9,9 @@ public interface IPersistence {
     List<Inventory> getInventoryList();
 
     void addInventory(Inventory inv) throws UserDefinedException;
+
+    void signUp(String name, String pw) throws UserDefinedException;
+    boolean verify(String name, String pw, String file) throws UserDefinedException;
+
+
 }

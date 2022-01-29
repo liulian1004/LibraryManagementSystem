@@ -13,6 +13,7 @@ public class Admin extends People {
         super(userName, password, idb);
     }
 
+    @Override
     public List<List<String>> getInventory() {
         List<List<String>> inventories = new ArrayList<>();
         for(Inventory in: db.getInventoryList()){
@@ -24,6 +25,9 @@ public class Admin extends People {
         }
         return inventories;
     }
+
+
+    @Override
     public void addInventory(String name,String num, String type) throws UserDefinedException {
         int number = Integer.valueOf(num);
         Type t;
@@ -42,5 +46,6 @@ public class Admin extends People {
         }
         db.addInventory(inv);
     }
+
 
 }

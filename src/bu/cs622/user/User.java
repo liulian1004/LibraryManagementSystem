@@ -1,12 +1,12 @@
 package bu.cs622.user;
 
 import bu.cs622.Main;
+import bu.cs622.UserDefinedException;
 import bu.cs622.db.IPersistence;
 import bu.cs622.inventory.Inventory;
 
 import java.util.*;
 
-import static bu.cs622.Main.db;
 
 public class User extends People {
 
@@ -14,6 +14,7 @@ public class User extends People {
         super(userName, password, idb);
     }
 
+    @Override
     public List<List<String>> getInventory() {
         List<List<String>> inventories = new ArrayList<>();
         for(Inventory in : db.getInventoryList()){
@@ -26,4 +27,10 @@ public class User extends People {
         }
         return inventories;
     }
+
+    @Override
+    public void addInventory(String name, String num, String type) throws UserDefinedException {
+        throw new UserDefinedException("You have no right to change inventory");
+    }
+
 }

@@ -11,23 +11,49 @@ import java.util.List;
 
 public class MockDB implements IPersistence {
 
-    private List<Inventory> repo;
-
+    private List<Inventory> inventories;
+    private List<String[]> users;
+    private List<String[]> admin;
     public MockDB() {
-        repo = new ArrayList<>();
+        inventories = new ArrayList<>();
         Inventory inv1 = new Book("test book1",5, Type.BOOK);
         Inventory inv2 = new Book("test book2",0, Type.BOOK);
-        repo.add(inv1);
-        repo.add(inv2);
+        inventories.add(inv1);
+        inventories.add(inv2);
+        users.add(new String[]{"user1","123"});
+        admin.add(new String[]{"admin","123"});
     }
 
     @Override
     public List<Inventory> getInventoryList() {
-        return repo;
+        return inventories;
     }
 
     @Override
     public void addInventory(Inventory inv) throws UserDefinedException {
-        repo.add(inv);
+        inventories.add(inv);
+    }
+
+    @Override
+    public void signUp(String name, String pw) throws UserDefinedException {
+        users.add(new String[]{"user2","1234"});
+    }
+
+    @Override
+    public boolean verify(String name, String pw, String file) throws UserDefinedException {
+        if(file == "admin.txt"){
+            return check(name, pw,admin);
+        }else{
+            return check(name, pw, users);
+        }
+    }
+
+    private boolean check(String name, String pw,List<String[]> people) {
+        for(String[] cur: people){
+            if(name.equals(cur[0]) && pw.equals(cur[1])){
+                return true;
+            }
+        }
+        return false;
     }
 }
