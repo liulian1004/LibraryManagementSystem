@@ -14,7 +14,6 @@ import java.util.*;
 public class Main {
 
     public IPersistence db;
-
     public  UserType people;
 
     public static void main(String[] args) {
@@ -28,31 +27,44 @@ public class Main {
         mainMenu();
 
     }
+
+
     private void mainMenu(){
-        while(true){
-            System.out.println("Please type 1 for user login, type 2 for admin login, type 3 for new user register:");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             try {
-                String input = reader.readLine();
-                if(input.equals("1")){
-                    userLogin();
-                }else if(input.equals("2")){
-                    adminLogin();
-                }else if(input.equals("3")){
-                    userRegister();
-                }
-                else{
-                    System.out.println("Your input is not correct, please try again");
+                while(true){
+                    System.out.println("Please type 1 for user login, type 2 for admin login, type 3 for new user register, type 4 for quit system:");
+                    String input = reader.readLine();
+                    if(("1").equals(input)){
+                        userLogin(reader);
+                    }else if(("2").equals(input)){
+                        adminLogin(reader);
+                    }else if(("3").equals(input)){
+                        userRegister(reader,db);
+                    }else if(("4").equals(input)) {
+                        System.out.println("Thank you for using this system, GoodBye");
+                        break;
+                    }else {
+                        System.out.println("Your input is not correct, please try again");
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+
             }
-        }
+            finally {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
     }
-    private void adminLogin() {
+    private void adminLogin(BufferedReader reader) {
         try {
-            if(logIn("admin","admin.txt")){
-                adminMenu();
+            if(logIn("admin","admin.txt",db, reader)){
+                adminMenu(reader);
             }else{
                 System.out.println("Your input is not correct, please try again");
             }
@@ -61,41 +73,38 @@ public class Main {
         }
 
     }
-    boolean logIn(String role, String file) throws UserDefinedException {
+    boolean logIn(String role, String file,IPersistence db, BufferedReader reader) throws UserDefinedException {
         String name = null;
         String pw = null;
-        System.out.println(String.format("Please type %s name: ",role));
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            name = reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        System.out.println("Please type password: ");
         try {
+            System.out.println(String.format("Please type %s name: ",role));
+            name = reader.readLine();
+            System.out.println("Please type password: ");
             pw = reader.readLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return db.verify(name, pw, file);
+        if(db.verify(name, pw, file)) {
+            people = new UserType(new User(name, pw, db));
+            return true;
+        }
+        return false;
     }
 
-    private void adminMenu(){
+    private void adminMenu(BufferedReader reader){
         people = new UserType(new Admin("Admin","123", db));
-        System.out.println("Please type 1 for checking inventory, type 2 for adding new inventory, type 3 for exiting the system");
         while(true){
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             try {
+                System.out.println("Please type 1 for checking inventory, type 2 for adding new inventory, type 3 for backing to previous menu");
                 String input = reader.readLine();
                 if(input.equals("1")){
                     printInventory();
                 }else if(input.equals("2")){
-                    addInventory();
+                    addInventory(reader);
                 }
                 else if(input .equals("3")){
-                    System.out.println("Thank you for using this system, GoodBye");
-                    System.exit(1);
+                    break;
                 }else{
                     System.out.println("Your input is not correct, please try again");
                 }
@@ -105,38 +114,30 @@ public class Main {
         }
     }
 
-    private  void addInventory() {
+    private  void addInventory(BufferedReader reader) {
         while(true){
-            System.out.println("Please type name: ");
             String name = null;
             String number = null;
             String type = null;
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            reader = new BufferedReader(new InputStreamReader(System.in));
             try {
+                System.out.println("Please type name: ");
                 name = reader.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Please type number: ");
-
-            try {
+                System.out.println("Please type number: ");
                 number = reader.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            System.out.println("Please type book, ebook or magazine: ");
-            try {
+                System.out.println("Please type book, ebook or magazine: ");
                 type = reader.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
             if(type != null && name != null && number != null){
                 try {
                     people.addInventory(name,number,type);
                     System.out.println("New inventory update success!");
                     printInventory();
-                    quitSystem();
+                    break;
                 } catch (UserDefinedException e) {
                     e.printStackTrace();
                 }
@@ -147,11 +148,11 @@ public class Main {
 
     }
 
-    private void userLogin() {
+    private void userLogin(BufferedReader reader) {
         connectDB();
         try {
-            if(logIn("user","user.txt")){
-                userMenu();
+            if(logIn("user","user.txt",db, reader)){
+                userMenu(reader);
             }else{
                 System.out.println("Your input is not correct, please try again");
             }
@@ -159,54 +160,48 @@ public class Main {
             e.printStackTrace();
         }
 
-
     }
 
-    private void userMenu() {
-        people = new UserType(new User("User1","123", db));
-        while(true){
-            System.out.println("Please type 1 for checking inventory, type 2 for exiting the system");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            try {
+    private void userMenu(BufferedReader reader) {
+        try {
+            while (true) {
+                System.out.println("Please type 1 for checking inventory, type 2 for exiting the system");
                 String input = reader.readLine();
-                if(input.equals("1")){
+                if (input.equals("1")) {
                     printInventory();
-                }else if(input .equals("2")){
-                    quitSystem();
-                }else{
+                } else if (input.equals("2")) {
+                    break;
+                } else {
                     System.out.println("Your input is not correct, please try again");
                 }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void userRegister(BufferedReader reader,IPersistence db){
+            String name = null;
+            String pw = null;
+
+            try {
+                System.out.println("Please type user name: ");
+                name = reader.readLine();
+                System.out.println("Please type password: ");
+                pw = reader.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-    private void userRegister() {
-        String name = null;
-        String pw = null;
-        System.out.println("Please type user name: ");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            name = reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        System.out.println("Please type password: ");
-        try {
-            pw = reader.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            db.signUp(name,pw);
-        } catch (UserDefinedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Your register is successful!");
-        mainMenu();
-
+            try {
+                db.signUp(name, pw);
+            } catch (UserDefinedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Your register is successful!");
     }
+
     public void connectDB() {
         try {
             db = new Database();
@@ -232,12 +227,7 @@ public class Main {
                 System.out.printf("%-22s%-22s\n",inventory.get(0),inventory.get(1));
             }
         }
-        quitSystem();
-    }
-
-    private void quitSystem(){
-        System.out.println("Thank you for using this system, GoodBye");
-        System.exit(1);
+    
     }
 
 

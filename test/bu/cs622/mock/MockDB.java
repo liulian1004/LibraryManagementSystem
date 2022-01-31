@@ -12,8 +12,8 @@ import java.util.List;
 public class MockDB implements IPersistence {
 
     private List<Inventory> inventories;
-    private List<String[]> users;
-    private List<String[]> admin;
+    private List<String[]> users= new ArrayList<>();
+    private List<String[]> admin = new ArrayList<>();
     public MockDB() {
         inventories = new ArrayList<>();
         Inventory inv1 = new Book("test book1",5, Type.BOOK);
@@ -55,5 +55,9 @@ public class MockDB implements IPersistence {
             }
         }
         return false;
+    }
+
+    public List<String[]> getUsers() {
+        return users;
     }
 }

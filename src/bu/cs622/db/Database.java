@@ -85,13 +85,6 @@ public class Database implements IPersistence {
             String line = inv.getName()+","+inv.getNumber()+","+inv.getType().toString();
             bufferedWriter.newLine();
             bufferedWriter.append(line);
-//            FileWriter writer = new FileWriter(file);
-//            BufferedWriter bufferedWriter = new BufferedWriter(writer);
-//            for(Inventory inv: inventoryList){
-//                String line = inv.getName()+","+inv.getNumber()+","+inv.getType().toString();
-//                bufferedWriter.write(line);
-//                bufferedWriter.newLine();
-//            }
             bufferedWriter.close();
         }catch (Exception e){
             throw new UserDefinedException("File does not exist");

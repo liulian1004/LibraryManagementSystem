@@ -1,30 +1,63 @@
 package bu.cs622;
 
-import bu.cs622.db.IPersistence;
 import bu.cs622.mock.MockDB;
-import bu.cs622.user.Admin;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.Mockito.spy;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class MainTest {
 
     private Main main;
-    private IPersistence spyDb;
+    private MockDB spyDb;
+    InputStream sysInBackup;
+
 
     @BeforeEach
     void setUp() {
         main = new Main();
-
         spyDb= new MockDB();
+        sysInBackup= System.in;
 
     }
 
+    @AfterEach
+    void tearDown() {
+        System.setIn(sysInBackup);
+    }
+
+    @Test
+    void testAdminLoginSuccess() throws UserDefinedException {
+        ByteArrayInputStream in = new ByteArrayInputStream("admin\n123\n".getBytes());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        boolean result = main.logIn("Admin","admin.txt", spyDb,reader);
+        assertTrue(result);
+    }
 
 
     @Test
-    void testAdminLogin() {
-
+    void testUserLoginSuccess() throws UserDefinedException {
+        ByteArrayInputStream in = new ByteArrayInputStream("user1\n123\n".getBytes());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        boolean result = main.logIn("User","user.txt", spyDb,reader);
+        assertTrue(result);
     }
+
+    @Test
+    void testUserRegisterSuccess() throws UserDefinedException {
+        ByteArrayInputStream in = new ByteArrayInputStream("user2\n123\n4\n".getBytes());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        main.userRegister(reader,spyDb);
+        assertEquals(2, spyDb.getUsers().size());
+    }
+
+
 }
