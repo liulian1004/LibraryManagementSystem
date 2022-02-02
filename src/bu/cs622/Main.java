@@ -227,7 +227,7 @@ public class Main {
                 System.out.printf("%-22s%-22s\n",inventory.get(0),inventory.get(1));
             }
         }
-    
+
     }
 
 

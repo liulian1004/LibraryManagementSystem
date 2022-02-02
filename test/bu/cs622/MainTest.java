@@ -10,8 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class MainTest {
@@ -42,6 +41,13 @@ public class MainTest {
         assertTrue(result);
     }
 
+    @Test
+    void testAdminLoginFail() throws UserDefinedException {
+        ByteArrayInputStream in = new ByteArrayInputStream("wrong_admin\n123\n".getBytes());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        boolean result = main.logIn("Admin","admin.txt", spyDb,reader);
+        assertFalse(result);
+    }
 
     @Test
     void testUserLoginSuccess() throws UserDefinedException {
@@ -49,6 +55,14 @@ public class MainTest {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         boolean result = main.logIn("User","user.txt", spyDb,reader);
         assertTrue(result);
+    }
+
+    @Test
+    void testUserLoginFail() throws UserDefinedException {
+        ByteArrayInputStream in = new ByteArrayInputStream("wrong_user1\n123\n".getBytes());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        boolean result = main.logIn("User","user.txt", spyDb,reader);
+        assertFalse(result);
     }
 
     @Test
