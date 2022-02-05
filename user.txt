@@ -1,6 +1,2 @@
-User1,123
-user2,123
-usr2,123
-ad,123
-ad,133
-ad,134
+{"userName":"User1","password":"123"}
+{"userName":"User2","password":"123"}

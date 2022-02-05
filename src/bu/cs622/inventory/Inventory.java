@@ -1,14 +1,18 @@
 package bu.cs622.inventory;
 
-public abstract class Inventory {
+import java.util.Objects;
+
+public class Inventory {
+    private int id;
     private String Name;
     private int Number;
-    private Type type;
+    private InventoryType inventoryType;
 
-    public Inventory(String name, int number, Type type) {
-        Name = name;
-        Number = number;
-        this.type = type;
+    public Inventory(int id, String name, int number, InventoryType inventoryType) {
+        this.Name = name;
+        this.Number = number;
+        this.inventoryType = inventoryType;
+        this.id = id;
     }
 
     public String getName() {
@@ -19,7 +23,35 @@ public abstract class Inventory {
         return Number;
     }
 
-    public Type getType() {
-        return type;
+    public int getId() {
+        return id;
+    }
+
+    public InventoryType getInventoryType() {
+        return inventoryType;
+    }
+
+    @Override
+    public String toString() {
+        return "Inventory{" +
+                "Name='" + Name + '\'' +
+                ", Number=" + Number +
+                ", type=" + inventoryType +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Inventory)) return false;
+        Inventory inventory = (Inventory) o;
+        return getNumber() == inventory.getNumber() &&
+                getName().equals(inventory.getName()) &&
+                getInventoryType() == inventory.getInventoryType();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Name, Number, inventoryType);
     }
 }

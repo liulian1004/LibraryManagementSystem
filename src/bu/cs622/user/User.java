@@ -6,26 +6,23 @@ import bu.cs622.db.IPersistence;
 import bu.cs622.inventory.Inventory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class User extends People {
 
-    public User(String userName, String password, IPersistence idb) {
-        super(userName, password, idb);
+
+    public User(String userName, String password, IPersistence idb, PeopleType type) {
+        super(userName, password, idb, type);
     }
 
     @Override
-    public List<List<String>> getInventory() {
-        List<List<String>> inventories = new ArrayList<>();
-        for(Inventory in : db.getInventoryList()){
-            if (in.getNumber() > 0){
-                List<String> inventory =  new ArrayList<>();
-                inventory.add(in.getName());
-                inventory.add(in.getType().name());
-                inventories.add(inventory);
-            }
-        }
-        return inventories;
+    public List<List<String>> getInventory() throws UserDefinedException {
+    return db.getInventoryList().
+                stream().filter(inv -> inv.getNumber()>0).
+                sorted(Comparator.comparing(Inventory::getId)).
+                map(inv ->Arrays.asList(new String[]{String.valueOf(inv.getId()),inv.getName(),inv.getInventoryType().name()})).
+                collect(Collectors.toList());
     }
 
     @Override

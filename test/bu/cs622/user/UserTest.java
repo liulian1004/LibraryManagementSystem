@@ -1,5 +1,6 @@
 package bu.cs622.user;
 
+import bu.cs622.UserDefinedException;
 import bu.cs622.db.IPersistence;
 import bu.cs622.mock.MockDB;
 import org.junit.Assert;
@@ -22,14 +23,14 @@ class UserTest {
     public void setUp() {
         spyDb= new MockDB();
         spyDb = spy(spyDb);
-        user = new User("user","123", spyDb);
+        user = new User("user","123", spyDb, PeopleType.USER);
     }
 
     @Test
-    void testGetInventory() {
+    void testGetInventory() throws UserDefinedException {
         List<List<String>> inventories = user.getInventory();
         List<List<String>> expected = new ArrayList<>();
-        expected.add(Arrays.asList("test book1", "BOOK"));
+        expected.add(Arrays.asList("1","test book1", "BOOK"));
         Assert.assertEquals(expected, inventories);
 
     }

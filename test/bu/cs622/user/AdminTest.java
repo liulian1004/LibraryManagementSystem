@@ -25,15 +25,15 @@ class AdminTest {
     void setUp() {
         spyDb= new MockDB();
         spyDb = spy(spyDb);
-        admin = new Admin("admin","123", spyDb);
+        admin = new Admin("admin","123", spyDb, PeopleType.ADMIN);
     }
 
     @Test
-    void testGetInventory() {
+    void testGetInventory() throws UserDefinedException {
         List<List<String>> inventories = admin.getInventory();
         List<List<String>> expected = new ArrayList<>();
-        expected.add(Arrays.asList("test book1", "BOOK","5"));
-        expected.add(Arrays.asList("test book2", "BOOK","0"));
+        expected.add(Arrays.asList("1","test book1", "BOOK","5"));
+        expected.add(Arrays.asList("2","test book2", "BOOK","0"));
         Assert.assertEquals(expected, inventories);
     }
 
@@ -42,9 +42,9 @@ class AdminTest {
         admin.addInventory("test book3","5","EBOOK");
         List<List<String>> inventories = admin.getInventory();
         List<List<String>> expected = new ArrayList<>();
-        expected.add(Arrays.asList("test book1", "BOOK","5"));
-        expected.add(Arrays.asList("test book2", "BOOK","0"));
-        expected.add(Arrays.asList("test book3", "EBOOK","5"));
+        expected.add(Arrays.asList("1","test book1", "BOOK","5"));
+        expected.add(Arrays.asList("2","test book2", "BOOK","0"));
+        expected.add(Arrays.asList("3","test book3", "EBOOK","5"));
         Assert.assertEquals(expected, inventories);
     }
 

@@ -5,7 +5,8 @@ import bu.cs622.inventory.*;
 import bu.cs622.user.Admin;
 import bu.cs622.user.People;
 import bu.cs622.user.User;
-import bu.cs622.user.UserType;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,10 +15,10 @@ import java.util.Scanner;
 
 public class Database implements IPersistence {
     private List<Inventory> inventoryList;
-
-
+    private Gson gson;
     public Database() throws UserDefinedException {
         inventoryList = new ArrayList<>();
+        gson = new Gson();
         readInventory();
     }
 
@@ -26,21 +27,7 @@ public class Database implements IPersistence {
             File file = new File("inventory.txt");
             Scanner reader = new Scanner(file);
             while(reader.hasNextLine()){
-                String[] cur = reader.nextLine().split(",");
-                Inventory inv = null;
-                if(cur.length >= 3){
-                    String name = cur[0];
-                    int number = Integer.valueOf(cur[1]);
-                    Type t = Type.valueOf(cur[2]);
-
-                    if(t == Type.BOOK){
-                        inv = new Book(name, number,t);
-                    }else if (t == Type.EBOOK){
-                        inv = new Ebook(name, number,t);
-                    }else {
-                        inv = new Magazine(name, number, t);
-                    }
-                }
+                Inventory inv = gson.fromJson(reader.nextLine(), Inventory.class);
                 if(inv != null) {
                     inventoryList.add(inv);
                 }
@@ -53,36 +40,39 @@ public class Database implements IPersistence {
 
 
     @Override
-    public List<Inventory> getInventoryList() {
+    public List<Inventory> getInventoryList() throws UserDefinedException {
         return inventoryList;
     }
 
     @Override
     public void addInventory(Inventory inv) throws UserDefinedException {
         inventoryList.add(inv);
-        updateFile(inv);
+        addFile(inv);
     }
 
     @Override
-    public void signUp(String name, String pw) throws UserDefinedException {
+    public void signUp(User newUser) throws UserDefinedException {
         try{
             File file = new File("user.txt");
             FileWriter writer = new FileWriter(file,true);
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
             bufferedWriter.newLine();
-            bufferedWriter.append(name +","+pw);
+            Gson gsonIgnore = new GsonBuilder()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .create();
+            bufferedWriter.append(gsonIgnore.toJson(newUser));
             bufferedWriter.close();
         }catch (Exception e){
             throw new UserDefinedException("File does not exist");
         }
     }
 
-    private void updateFile (Inventory inv) throws UserDefinedException{
+    private void addFile (Inventory inv) throws UserDefinedException{
         try{
             File file = new File("inventory.txt");
             FileWriter writer = new FileWriter(file,true);
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
-            String line = inv.getName()+","+inv.getNumber()+","+inv.getType().toString();
+            String line = gson.toJson(inv);
             bufferedWriter.newLine();
             bufferedWriter.append(line);
             bufferedWriter.close();
@@ -98,8 +88,13 @@ public class Database implements IPersistence {
             File file = new File(txtFile);
             Scanner reader = new Scanner(file);
             while(reader.hasNextLine()){
-                String[] cur = reader.nextLine().split(",");
-                if(name.equals(cur[0]) && pw.equals(cur[1])){
+                People user = null;
+                if(txtFile.equals("user.txt")) {
+                    user = gson.fromJson(reader.nextLine(),User.class);
+                } else{
+                    user = gson.fromJson(reader.nextLine(), Admin.class);
+                }
+                if(name.equals(user.getUserName()) && pw.equals(user.getPassword())){
                     return true;
                 }
             }
@@ -108,6 +103,11 @@ public class Database implements IPersistence {
         }catch (Exception e){
             throw new UserDefinedException("File does not exist");
         }
+    }
+
+    @Override
+    public int getCurId(){
+        return inventoryList.size();
     }
 
 }

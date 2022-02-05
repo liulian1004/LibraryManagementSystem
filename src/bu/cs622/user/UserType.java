@@ -16,7 +16,7 @@ public class UserType<P extends People> {
         return people;
     }
 
-    public List<List<String>> checkInventory() {
+    public List<List<String>> checkInventory() throws UserDefinedException {
         return getPeople().getInventory();
     }
 

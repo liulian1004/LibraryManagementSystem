@@ -1,6 +1,6 @@
 package bu.cs622.inventory;
 
-public enum Type {
+public enum InventoryType {
     BOOK,
     MAGAZINE,
     EBOOK,

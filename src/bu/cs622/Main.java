@@ -2,9 +2,7 @@ package bu.cs622;
 
 import bu.cs622.db.Database;
 import bu.cs622.db.IPersistence;
-import bu.cs622.user.Admin;
-import bu.cs622.user.User;
-import bu.cs622.user.UserType;
+import bu.cs622.user.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -86,14 +84,14 @@ public class Main {
             e.printStackTrace();
         }
         if(db.verify(name, pw, file)) {
-            people = new UserType(new User(name, pw, db));
+            people = new UserType(new User(name, pw, db, PeopleType.USER));
             return true;
         }
         return false;
     }
 
     private void adminMenu(BufferedReader reader){
-        people = new UserType(new Admin("Admin","123", db));
+        people = new UserType(new Admin("Admin","123", db, PeopleType.ADMIN));
         while(true){
             try {
                 System.out.println("Please type 1 for checking inventory, type 2 for adding new inventory, type 3 for backing to previous menu");
@@ -195,7 +193,7 @@ public class Main {
             }
 
             try {
-                db.signUp(name, pw);
+                db.signUp(new User(name, pw, db, PeopleType.USER));
             } catch (UserDefinedException e) {
                 e.printStackTrace();
             }
@@ -213,18 +211,22 @@ public class Main {
 
     private void printInventory(){
         List<List<String>> inventories = null;
-        inventories = people.checkInventory();
-        if(inventories != null && inventories.size() > 0 && inventories.get(0).size() == 3){
+        try {
+            inventories = people.checkInventory();
+        } catch (UserDefinedException e) {
+            e.printStackTrace();
+        }
+        if(inventories != null && inventories.size() > 0 && inventories.get(0).size() == 4){
             System.out.println("============Inventory List for Admin=============");
-            System.out.printf("%-22s%-22s%-22s\n","Name","Type","Number");
+            System.out.printf("%-22s%-22s%-22s%-22s\n","Id","Name","Type","Number");
             for(List<String> inventory: inventories){
-                System.out.printf("%-22s%-22s%-22s\n",inventory.get(0),inventory.get(1),inventory.get(2));
+                System.out.printf("%-22s%-22s%-22s%-22s\n",inventory.get(0),inventory.get(1),inventory.get(2), inventory.get(3));
             }
-        }else if(inventories != null && inventories.size() > 0 && inventories.get(0).size() == 2){
+        }else if(inventories != null && inventories.size() > 0 && inventories.get(0).size() == 3){
             System.out.println("=========Inventory List for User==========");
-            System.out.printf("%-22s%-22s\n","Name","Type");
+            System.out.printf("%-22s%-22s%-22s\n","Id","Name","Type");
             for(List<String> inventory: inventories){
-                System.out.printf("%-22s%-22s\n",inventory.get(0),inventory.get(1));
+                System.out.printf("%-22s%-22s%-22s\n",inventory.get(0),inventory.get(1), inventory.get(2));
             }
         }
 

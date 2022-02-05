@@ -1,5 +1,5 @@
-Little Prince,5,BOOK
-Fashion World,5,MAGAZINE
-Clean code,5,EBOOK
-Effective Java,0,BOOK
-Test,1,EBOOK
+
+{"id":1,"Name":"Little Prince","Number":10,"inventoryType":"BOOK"}
+{"id":2,"Name":"Fashion World","Number":10,"inventoryType":"MAGAZINE"}
+{"id":3,"Name":"Effective Java","Number":0,"inventoryType":"EBOOK"}
+{"id":4,"Name":"TestBook","Number":9,"inventoryType":"BOOK"}
