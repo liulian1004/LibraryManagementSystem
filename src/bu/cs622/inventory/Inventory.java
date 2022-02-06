@@ -27,6 +27,10 @@ public class Inventory {
         return id;
     }
 
+    public void setNumber(int number) {
+        Number = number;
+    }
+
     public InventoryType getInventoryType() {
         return inventoryType;
     }

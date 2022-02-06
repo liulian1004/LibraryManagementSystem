@@ -14,15 +14,14 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Database implements IPersistence {
-    private List<Inventory> inventoryList;
+
     private Gson gson;
     public Database() throws UserDefinedException {
-        inventoryList = new ArrayList<>();
         gson = new Gson();
-        readInventory();
     }
 
-    private void readInventory() throws UserDefinedException {
+    private List<Inventory> readInventory() throws UserDefinedException {
+        List<Inventory> inventoryList = new ArrayList<>();
         try{
             File file = new File("inventory.txt");
             Scanner reader = new Scanner(file);
@@ -36,17 +35,17 @@ public class Database implements IPersistence {
         }catch (Exception e){
             throw new UserDefinedException("File does not exist");
         }
+        return inventoryList;
     }
 
 
     @Override
     public List<Inventory> getInventoryList() throws UserDefinedException {
-        return inventoryList;
+        return readInventory();
     }
 
     @Override
     public void addInventory(Inventory inv) throws UserDefinedException {
-        inventoryList.add(inv);
         addFile(inv);
     }
 
@@ -106,8 +105,49 @@ public class Database implements IPersistence {
     }
 
     @Override
-    public int getCurId(){
-        return inventoryList.size();
+    public int getCurId() throws UserDefinedException {
+        return readInventory().size();
     }
+
+    @Override
+    public void updateInventory(int id) throws UserDefinedException {
+        updateFile(id);
+    }
+
+
+    private void updateFile(int id) throws UserDefinedException {
+        try{
+            File file = new File("inventory.txt");
+            StringBuffer buffer = new StringBuffer();
+            Scanner reader = new Scanner(file);
+            boolean findID =false;
+            while(reader.hasNextLine()){
+                String oldLine = reader.nextLine();
+                Inventory inv = gson.fromJson(oldLine, Inventory.class);
+                if(inv != null && inv.getId() == id) {
+                    if(inv.getNumber() <= 0){
+                        throw new UserDefinedException(String.format("%s is not available", inv.getName()));
+                    }
+                    inv.setNumber(inv.getNumber()-1);
+                    String newLine = gson.toJson(inv);
+                    buffer.append(newLine);
+                    findID = true;
+                }else{
+                    buffer.append(oldLine);
+                }
+                buffer.append('\n');
+            }
+            reader.close();
+            if(!findID){
+                throw new UserDefinedException(String.format("%s is not available", id));
+            }
+            FileWriter writer = new FileWriter("inventory.txt");
+            writer.write(buffer.toString());
+            writer.close();
+        }catch (Exception e){
+            throw new UserDefinedException("File does not exist");
+        }
+    }
+
 
 }

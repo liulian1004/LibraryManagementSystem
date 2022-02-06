@@ -14,6 +14,7 @@ public class Main {
     public IPersistence db;
     public  UserType people;
 
+
     public static void main(String[] args) {
         Main main = new Main();
         main.init();
@@ -94,7 +95,7 @@ public class Main {
         people = new UserType(new Admin("Admin","123", db, PeopleType.ADMIN));
         while(true){
             try {
-                System.out.println("Please type 1 for checking inventory, type 2 for adding new inventory, type 3 for backing to previous menu");
+                System.out.println("Please type 1 for checking inventory, type 2 for adding new inventory, type 3 for backing to main menu");
                 String input = reader.readLine();
                 if(input.equals("1")){
                     printInventory();
@@ -163,10 +164,11 @@ public class Main {
     private void userMenu(BufferedReader reader) {
         try {
             while (true) {
-                System.out.println("Please type 1 for checking inventory, type 2 for exiting the system");
+                System.out.println("Please type 1 for checking inventory or borrowing book, type 2 for exiting the system");
                 String input = reader.readLine();
                 if (input.equals("1")) {
                     printInventory();
+                    borrowBookMenu(reader);
                 } else if (input.equals("2")) {
                     break;
                 } else {
@@ -177,6 +179,56 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void borrowBookMenu(BufferedReader reader){
+        try {
+            while (true) {
+                System.out.println("Please type 1 for borrowing book, type 2 for go back");
+                String input = reader.readLine();
+                if (input.equals("1")) {
+
+                    borrowBook(reader, db);
+                } else if (input.equals("2")) {
+                    break;
+                } else {
+                    System.out.println("Your input is not correct, please try again");
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    void borrowBook(BufferedReader reader, IPersistence db){
+        try {
+            while (true) {
+                System.out.println("Please type book id listed from below");
+                printInventory();
+                System.out.println("Please type book id for borrowing book, type 0 for go back");
+                String input = reader.readLine();
+                if (bookAvailable(input)) {
+                    db.updateInventory(Integer.valueOf(input));
+                    System.out.println("You borrow this bookd succesfully");
+                } else if (input.equals("0")) {
+                    break;
+                } else {
+                    System.out.println("Your input id is not correct, please try again");
+                }
+            }
+
+        } catch (IOException | UserDefinedException e) {
+            e.printStackTrace();
+        }
+    }
+    private boolean bookAvailable(String id) throws UserDefinedException {
+        List<List<String>> inventories = people.checkInventory();
+        for(List<String> inv: inventories ){
+            if(id.equals(String.valueOf(inv.get(0)))){
+                return true;
+            }
+        }
+        return false;
     }
 
     void userRegister(BufferedReader reader,IPersistence db){

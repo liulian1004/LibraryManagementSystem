@@ -1,6 +1,8 @@
 package bu.cs622;
 
+import bu.cs622.inventory.Inventory;
 import bu.cs622.mock.MockDB;
+import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,6 +68,7 @@ public class MainTest {
         assertFalse(result);
     }
 
+
     @Test
     void testUserRegisterSuccess() throws UserDefinedException {
         ByteArrayInputStream in = new ByteArrayInputStream("user2\n123\n4\n".getBytes());
@@ -73,5 +77,27 @@ public class MainTest {
         assertEquals(2, spyDb.getUsers().size());
     }
 
+
+    @Before
+    void setup() throws UserDefinedException {
+        ByteArrayInputStream in = new ByteArrayInputStream("user1\n123\n".getBytes());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        main.logIn("User","user.txt", spyDb,reader);
+    }
+    @Test
+    void testBorrowBookSuccess() throws UserDefinedException {
+        ByteArrayInputStream in = new ByteArrayInputStream("user1\n123\n1\n0".getBytes());
+        //ByteArrayInputStream in = new ByteArrayInputStream("1".getBytes());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        main.logIn("User","user.txt", spyDb,reader);
+        main.borrowBook(reader,spyDb);
+        List<Inventory> list = spyDb.getInventoryList();
+        for(Inventory inv: list){
+            if(inv.getId() == 1){
+                assertEquals(4, inv.getNumber());
+            }
+        }
+
+    }
 
 }

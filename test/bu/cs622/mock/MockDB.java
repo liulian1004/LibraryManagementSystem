@@ -53,6 +53,15 @@ public class MockDB implements IPersistence {
         return inventories.size();
     }
 
+    @Override
+    public void updateInventory(int id) throws UserDefinedException {
+            for(Inventory inv: inventories){
+                if(inv.getId() == id && inv.getNumber() > 0){
+                    inv.setNumber(inv.getNumber()-1);
+                }
+            }
+    }
+
     private boolean check(String name, String pw,List<String[]> people) {
         for(String[] cur: people){
             if(name.equals(cur[0]) && pw.equals(cur[1])){
