@@ -232,7 +232,7 @@ public class Main {
                 String input = reader.readLine();
                 if (bookExist(input)) {
                     people.returnBook(Integer.valueOf(input),1);
-                    System.out.println("You have return borrow successfully");
+                    System.out.println("You have returned borrow successfully");
                 } else if (input.equals("0")) {
                     break;
                 } else {

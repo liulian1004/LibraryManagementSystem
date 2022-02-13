@@ -120,8 +120,6 @@ public class Database implements IPersistence {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
     }
 
     private void updateFile(int id, int number) throws UserDefinedException {
@@ -150,7 +148,7 @@ public class Database implements IPersistence {
                 if(!findID){
                     throw new UserDefinedException(String.format("%s is not available", id));
                 }
-                FileWriter writer = new FileWriter("inventory_copy.txt");
+                FileWriter writer = new FileWriter("inventory.txt");
                 writer.write(buffer.toString());
                 writer.close();
             }

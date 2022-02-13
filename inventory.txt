@@ -1,5 +1,5 @@
 
-{"id":1,"Name":"Little Prince","Number":10,"inventoryType":"BOOK"}
+{"id":1,"Name":"Little Prince","Number":11,"inventoryType":"BOOK"}
 {"id":2,"Name":"Fashion World","Number":10,"inventoryType":"MAGAZINE"}
 {"id":3,"Name":"Effective Java","Number":0,"inventoryType":"EBOOK"}
 {"id":4,"Name":"TestBook","Number":10,"inventoryType":"BOOK"}
