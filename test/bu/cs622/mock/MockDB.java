@@ -54,10 +54,10 @@ public class MockDB implements IPersistence {
     }
 
     @Override
-    public void updateInventory(int id) throws UserDefinedException {
+    public void updateInventory(int id, int number) throws UserDefinedException {
             for(Inventory inv: inventories){
                 if(inv.getId() == id && inv.getNumber() > 0){
-                    inv.setNumber(inv.getNumber()-1);
+                    inv.setNumber(inv.getNumber()+number);
                 }
             }
     }

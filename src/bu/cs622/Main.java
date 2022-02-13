@@ -2,6 +2,7 @@ package bu.cs622;
 
 import bu.cs622.db.Database;
 import bu.cs622.db.IPersistence;
+import bu.cs622.inventory.Inventory;
 import bu.cs622.user.*;
 
 import java.io.BufferedReader;
@@ -164,11 +165,11 @@ public class Main {
     private void userMenu(BufferedReader reader) {
         try {
             while (true) {
-                System.out.println("Please type 1 for checking inventory or borrowing book, type 2 for exiting the system");
+                System.out.println("Please type 1 for checking inventory, borrowing book or returning book, type 2 for exiting the system");
                 String input = reader.readLine();
                 if (input.equals("1")) {
                     printInventory();
-                    borrowBookMenu(reader);
+                    borrowReturnBookMenu(reader);
                 } else if (input.equals("2")) {
                     break;
                 } else {
@@ -181,15 +182,17 @@ public class Main {
         }
     }
 
-    private void borrowBookMenu(BufferedReader reader){
+    private void borrowReturnBookMenu(BufferedReader reader){
         try {
             while (true) {
-                System.out.println("Please type 1 for borrowing book, type 2 for go back");
+                System.out.println("Please type 1 for borrowing book, type 2 for return book, and type 3 for go back");
                 String input = reader.readLine();
                 if (input.equals("1")) {
-
                     borrowBook(reader, db);
-                } else if (input.equals("2")) {
+                } else if(input.equals("2")){
+                    returnBook(reader, db);
+                }
+                else if (input.equals("3")) {
                     break;
                 } else {
                     System.out.println("Your input is not correct, please try again");
@@ -208,8 +211,8 @@ public class Main {
                 System.out.println("Please type book id for borrowing book, type 0 for go back");
                 String input = reader.readLine();
                 if (bookAvailable(input)) {
-                    db.updateInventory(Integer.valueOf(input));
-                    System.out.println("You borrow this bookd succesfully");
+                    people.borrowBook(Integer.valueOf(input),-1);
+                    System.out.println("You borrow this book succesfully");
                 } else if (input.equals("0")) {
                     break;
                 } else {
@@ -221,6 +224,36 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    void returnBook(BufferedReader reader, IPersistence db){
+        try {
+            while (true) {
+                System.out.println("Please type book id for returning, type 0 for go back");
+                String input = reader.readLine();
+                if (bookExist(input)) {
+                    people.returnBook(Integer.valueOf(input),1);
+                    System.out.println("You have return borrow successfully");
+                } else if (input.equals("0")) {
+                    break;
+                } else {
+                    System.out.println("Your input id is not correct, please try again");
+                }
+            }
+
+        } catch (IOException | UserDefinedException e) {
+            e.printStackTrace();
+        }
+    }
+    private boolean bookExist(String id) throws UserDefinedException {
+        List<Inventory> inventories = db.getInventoryList();
+        for(Inventory inv: inventories ){
+            if(id.equals(String.valueOf(inv.getId()))){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean bookAvailable(String id) throws UserDefinedException {
         List<List<String>> inventories = people.checkInventory();
         for(List<String> inv: inventories ){
@@ -230,6 +263,7 @@ public class Main {
         }
         return false;
     }
+
 
     void userRegister(BufferedReader reader,IPersistence db){
             String name = null;
@@ -254,7 +288,7 @@ public class Main {
 
     public void connectDB() {
         try {
-            db = new Database();
+            db = new Database("inventory.txt");
         } catch (UserDefinedException e) {
             e.printErrorMessage();
             e.printStackTrace();

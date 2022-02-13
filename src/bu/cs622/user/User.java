@@ -30,4 +30,6 @@ public class User extends People {
         throw new UserDefinedException("You have no right to change inventory");
     }
 
+
+
 }

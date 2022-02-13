@@ -16,15 +16,16 @@ import java.util.Scanner;
 public class Database implements IPersistence {
 
     private Gson gson;
-    public Database() throws UserDefinedException {
+    private File inventoryFile;
+    public Database(String fileName) throws UserDefinedException {
         gson = new Gson();
+        inventoryFile = new File(fileName);;
     }
 
     private List<Inventory> readInventory() throws UserDefinedException {
         List<Inventory> inventoryList = new ArrayList<>();
         try{
-            File file = new File("inventory.txt");
-            Scanner reader = new Scanner(file);
+            Scanner reader = new Scanner(inventoryFile);
             while(reader.hasNextLine()){
                 Inventory inv = gson.fromJson(reader.nextLine(), Inventory.class);
                 if(inv != null) {
@@ -52,8 +53,8 @@ public class Database implements IPersistence {
     @Override
     public void signUp(User newUser) throws UserDefinedException {
         try{
-            File file = new File("user.txt");
-            FileWriter writer = new FileWriter(file,true);
+            File userFile = new File("user.txt");
+            FileWriter writer = new FileWriter(userFile,true);
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
             bufferedWriter.newLine();
             Gson gsonIgnore = new GsonBuilder()
@@ -68,8 +69,7 @@ public class Database implements IPersistence {
 
     private void addFile (Inventory inv) throws UserDefinedException{
         try{
-            File file = new File("inventory.txt");
-            FileWriter writer = new FileWriter(file,true);
+            FileWriter writer = new FileWriter(inventoryFile,true);
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
             String line = gson.toJson(inv);
             bufferedWriter.newLine();
@@ -109,41 +109,52 @@ public class Database implements IPersistence {
         return readInventory().size();
     }
 
+
     @Override
-    public void updateInventory(int id) throws UserDefinedException {
-        updateFile(id);
+    public void updateInventory(int id, int number) throws UserDefinedException {
+        ThreadToJoin thread = new ThreadToJoin();
+        try{
+            thread.start();
+            thread.join();
+            updateFile(id, number);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
-
-    private void updateFile(int id) throws UserDefinedException {
+    private void updateFile(int id, int number) throws UserDefinedException {
         try{
-            File file = new File("inventory.txt");
-            StringBuffer buffer = new StringBuffer();
-            Scanner reader = new Scanner(file);
-            boolean findID =false;
-            while(reader.hasNextLine()){
-                String oldLine = reader.nextLine();
-                Inventory inv = gson.fromJson(oldLine, Inventory.class);
-                if(inv != null && inv.getId() == id) {
-                    if(inv.getNumber() <= 0){
-                        throw new UserDefinedException(String.format("%s is not available", inv.getName()));
+            synchronized (this.inventoryFile){
+                StringBuffer buffer = new StringBuffer();
+                Scanner reader = new Scanner(inventoryFile);
+                boolean findID =false;
+                while(reader.hasNextLine()){
+                    String oldLine = reader.nextLine();
+                    Inventory inv = gson.fromJson(oldLine, Inventory.class);
+                    if(inv != null && inv.getId() == id) {
+                        if(inv.getNumber() <= 0){
+                            throw new UserDefinedException(String.format("%s is not available", inv.getName()));
+                        }
+                        inv.setNumber(inv.getNumber()+number);
+                        String newLine = gson.toJson(inv);
+                        buffer.append(newLine);
+                        findID = true;
+                    }else{
+                        buffer.append(oldLine);
                     }
-                    inv.setNumber(inv.getNumber()-1);
-                    String newLine = gson.toJson(inv);
-                    buffer.append(newLine);
-                    findID = true;
-                }else{
-                    buffer.append(oldLine);
+                    buffer.append('\n');
                 }
-                buffer.append('\n');
+                reader.close();
+                if(!findID){
+                    throw new UserDefinedException(String.format("%s is not available", id));
+                }
+                FileWriter writer = new FileWriter("inventory_copy.txt");
+                writer.write(buffer.toString());
+                writer.close();
             }
-            reader.close();
-            if(!findID){
-                throw new UserDefinedException(String.format("%s is not available", id));
-            }
-            FileWriter writer = new FileWriter("inventory.txt");
-            writer.write(buffer.toString());
-            writer.close();
+
         }catch (Exception e){
             throw new UserDefinedException("File does not exist");
         }

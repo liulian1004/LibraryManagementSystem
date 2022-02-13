@@ -24,4 +24,12 @@ public class UserType<P extends People> {
         getPeople().addInventory(name,num, type);
     }
 
+    public void borrowBook(int id, int number) throws UserDefinedException {
+        getPeople().borrowBook(id, number);
+    };
+
+    public void returnBook(int id, int number) throws UserDefinedException {
+        getPeople().returnBook(id, number);
+    };
+
 }

@@ -14,5 +14,5 @@ public interface IPersistence {
     void signUp(User newUser) throws UserDefinedException;
     boolean verify(String name, String pw, String file) throws UserDefinedException;
     int getCurId() throws UserDefinedException;
-    void updateInventory(int id) throws UserDefinedException;
+    void updateInventory(int id, int number) throws UserDefinedException;
 }

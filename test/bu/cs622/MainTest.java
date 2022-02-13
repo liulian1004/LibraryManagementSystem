@@ -78,16 +78,10 @@ public class MainTest {
     }
 
 
-    @Before
-    void setup() throws UserDefinedException {
-        ByteArrayInputStream in = new ByteArrayInputStream("user1\n123\n".getBytes());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        main.logIn("User","user.txt", spyDb,reader);
-    }
+
     @Test
     void testBorrowBookSuccess() throws UserDefinedException {
         ByteArrayInputStream in = new ByteArrayInputStream("user1\n123\n1\n0".getBytes());
-        //ByteArrayInputStream in = new ByteArrayInputStream("1".getBytes());
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         main.logIn("User","user.txt", spyDb,reader);
         main.borrowBook(reader,spyDb);
@@ -97,7 +91,22 @@ public class MainTest {
                 assertEquals(4, inv.getNumber());
             }
         }
-
     }
+
+    @Test
+    void testReturnBookSuccess() throws UserDefinedException {
+        ByteArrayInputStream in = new ByteArrayInputStream("user1\n123\n1\n0".getBytes());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        main.connectDB();
+        main.logIn("User","user.txt", spyDb,reader);
+        main.returnBook(reader,spyDb);
+        List<Inventory> list = spyDb.getInventoryList();
+        for(Inventory inv: list){
+            if(inv.getId() == 1){
+                assertEquals(6, inv.getNumber());
+            }
+        }
+    }
+
 
 }
