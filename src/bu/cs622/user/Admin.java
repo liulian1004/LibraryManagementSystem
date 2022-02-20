@@ -26,18 +26,6 @@ public class Admin extends People {
     }
 
 
-    @Override
-    public void addInventory(String name,String num, String type) throws UserDefinedException {
-        InventoryType t;
-        try{
-            t = InventoryType.valueOf(type.toUpperCase());
-        } catch (Exception e){
-            throw new UserDefinedException(String.format("The inventory type '%s' does not exist", type));
-        }
-        System.out.println(db.getCurId()+1);
-        db.addInventory(new Inventory(db.getInventoryList().size()+1, name, Integer.valueOf(num), t));
-    }
-
 
 
 }

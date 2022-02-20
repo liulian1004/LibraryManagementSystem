@@ -32,8 +32,6 @@ public abstract class People {
 
     public abstract List<List<String>> getInventory() throws UserDefinedException;
 
-    public abstract void addInventory(String name,String num, String type) throws UserDefinedException;
-
     public void borrowBook(int id, int number) throws UserDefinedException {
         db.updateInventory(id, number);
     };

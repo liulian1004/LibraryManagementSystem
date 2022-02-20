@@ -9,10 +9,10 @@ import java.util.List;
 public interface IPersistence {
     List<Inventory> getInventoryList() throws UserDefinedException;
 
-    void addInventory(Inventory inv) throws UserDefinedException;
+   void addInventory(String name, String number, String type) throws UserDefinedException;
 
     void signUp(User newUser) throws UserDefinedException;
     boolean verify(String name, String pw, String file) throws UserDefinedException;
-    int getCurId() throws UserDefinedException;
     void updateInventory(int id, int number) throws UserDefinedException;
+    void disconnectDB() throws UserDefinedException;
 }

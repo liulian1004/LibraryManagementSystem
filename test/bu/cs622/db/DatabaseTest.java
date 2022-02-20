@@ -32,7 +32,7 @@ public class DatabaseTest {
                 e.printStackTrace();
             }
             List<Inventory> list = db.getInventoryList();
-            Assert.assertEquals(9, list.get(0).getNumber());
+            Assert.assertEquals(10, list.get(0).getNumber());
             resetDB();
         }
     }
@@ -47,7 +47,7 @@ public class DatabaseTest {
                     String oldLine = reader.nextLine();
                     Inventory inv = gson.fromJson(oldLine, Inventory.class);
                     if(inv != null && inv.getId() == 1) {
-                        inv.setNumber(9);
+                        inv.setNumber(10);
                         String newLine = gson.toJson(inv);
                         buffer.append(newLine);
                     }else{

@@ -42,15 +42,15 @@ public class Main {
                     }else if(("3").equals(input)){
                         userRegister(reader,db);
                     }else if(("4").equals(input)) {
+                        db.disconnectDB();
                         System.out.println("Thank you for using this system, GoodBye");
                         break;
                     }else {
                         System.out.println("Your input is not correct, please try again");
                     }
                 }
-            } catch (IOException e) {
+            } catch (IOException | UserDefinedException e) {
                 e.printStackTrace();
-
             }
             finally {
                 try {
@@ -63,7 +63,7 @@ public class Main {
     }
     private void adminLogin(BufferedReader reader) {
         try {
-            if(logIn("admin","admin.txt",db, reader)){
+            if(logIn("admin","ADMIN",db, reader)){
                 adminMenu(reader);
             }else{
                 System.out.println("Your input is not correct, please try again");
@@ -121,7 +121,7 @@ public class Main {
             String type = null;
             reader = new BufferedReader(new InputStreamReader(System.in));
             try {
-                System.out.println("Please type name: ");
+                System.out.println("Please type book name: ");
                 name = reader.readLine();
                 System.out.println("Please type number: ");
                 number = reader.readLine();
@@ -134,7 +134,7 @@ public class Main {
 
             if(type != null && name != null && number != null){
                 try {
-                    people.addInventory(name,number,type);
+                    db.addInventory(name,number, type);
                     System.out.println("New inventory update success!");
                     printInventory();
                     break;
@@ -151,7 +151,7 @@ public class Main {
     private void userLogin(BufferedReader reader) {
         connectDB();
         try {
-            if(logIn("user","user.txt",db, reader)){
+            if(logIn("user","USER",db, reader)){
                 userMenu(reader);
             }else{
                 System.out.println("Your input is not correct, please try again");
@@ -288,7 +288,7 @@ public class Main {
 
     public void connectDB() {
         try {
-            db = new Database("inventory.txt");
+            db = new Database("database");
         } catch (UserDefinedException e) {
             e.printErrorMessage();
             e.printStackTrace();

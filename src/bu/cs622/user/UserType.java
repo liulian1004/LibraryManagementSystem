@@ -20,9 +20,6 @@ public class UserType<P extends People> {
         return getPeople().getInventory();
     }
 
-    public void addInventory(String name, String num, String type) throws UserDefinedException {
-        getPeople().addInventory(name,num, type);
-    }
 
     public void borrowBook(int id, int number) throws UserDefinedException {
         getPeople().borrowBook(id, number);

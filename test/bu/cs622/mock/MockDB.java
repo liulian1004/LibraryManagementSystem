@@ -30,8 +30,8 @@ public class MockDB implements IPersistence {
     }
 
     @Override
-    public void addInventory(Inventory inv) throws UserDefinedException {
-        inventories.add(inv);
+    public void addInventory(String name, String number, String type) throws UserDefinedException {
+        inventories.add(new Inventory(3,name,Integer.valueOf(number),InventoryType.valueOf(type)));
     }
 
     @Override
@@ -48,10 +48,6 @@ public class MockDB implements IPersistence {
         }
     }
 
-    @Override
-    public int getCurId() {
-        return inventories.size();
-    }
 
     @Override
     public void updateInventory(int id, int number) throws UserDefinedException {
@@ -60,6 +56,11 @@ public class MockDB implements IPersistence {
                     inv.setNumber(inv.getNumber()+number);
                 }
             }
+    }
+
+    @Override
+    public void disconnectDB() throws UserDefinedException {
+
     }
 
     private boolean check(String name, String pw,List<String[]> people) {

@@ -25,11 +25,6 @@ public class User extends People {
                 collect(Collectors.toList());
     }
 
-    @Override
-    public void addInventory(String name, String num, String type) throws UserDefinedException {
-        throw new UserDefinedException("You have no right to change inventory");
-    }
-
 
 
 }

@@ -37,24 +37,5 @@ class AdminTest {
         Assert.assertEquals(expected, inventories);
     }
 
-    @Test
-    void testAddInventory() throws UserDefinedException {
-        admin.addInventory("test book3","5","EBOOK");
-        List<List<String>> inventories = admin.getInventory();
-        List<List<String>> expected = new ArrayList<>();
-        expected.add(Arrays.asList("1","test book1", "BOOK","5"));
-        expected.add(Arrays.asList("2","test book2", "BOOK","0"));
-        expected.add(Arrays.asList("3","test book3", "EBOOK","5"));
-        Assert.assertEquals(expected, inventories);
-    }
 
-    @Test
-    void testAddInventoryThrowError() {
-        Exception exception = assertThrows(UserDefinedException.class, () -> {
-            admin.addInventory("test book3", "5", "WrongType");
-        });
-        String exceptedMessage = String.format("The inventory type '%s' does not exist", "wrongType");
-        String actualMessage = exception.getMessage();
-        actualMessage.equals(exceptedMessage);
-    }
 }
