@@ -29,4 +29,12 @@ public class UserType<P extends People> {
         getPeople().returnBook(id, number);
     };
 
+    public String getSum() throws UserDefinedException {
+        return getPeople().getSum();
+    }
+
+    public String checkBorrowedBooks() throws UserDefinedException {
+       return getPeople().borrowedBooks();
+
+    }
 }

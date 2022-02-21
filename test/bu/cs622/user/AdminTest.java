@@ -37,5 +37,10 @@ class AdminTest {
         Assert.assertEquals(expected, inventories);
     }
 
+    @Test
+    void testGetSum() throws UserDefinedException {
+        String expected = "There are 5 books in the inventory";
+        Assert.assertEquals(expected, admin.getSum());
+    }
 
 }

@@ -34,4 +34,9 @@ class UserTest {
         Assert.assertEquals(expected, inventories);
 
     }
+
+    void testGetBorrowedBooks() throws UserDefinedException {
+        String expected = "You have borrowed following books: \ntest book1,test book2";
+        Assert.assertEquals(expected,user.borrowedBooks());
+    }
 }

@@ -13,6 +13,8 @@ public interface IPersistence {
 
     void signUp(User newUser) throws UserDefinedException;
     boolean verify(String name, String pw, String file) throws UserDefinedException;
-    void updateInventory(int id, int number) throws UserDefinedException;
+    void updateInventory(int id, int number, String userName) throws UserDefinedException;
     void disconnectDB() throws UserDefinedException;
+    int getSum() throws UserDefinedException;
+    List<String> borrowedBookLists(String userName) throws UserDefinedException ;
 }

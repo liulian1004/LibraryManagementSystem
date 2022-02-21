@@ -50,7 +50,7 @@ public class MockDB implements IPersistence {
 
 
     @Override
-    public void updateInventory(int id, int number) throws UserDefinedException {
+    public void updateInventory(int id, int number,String userName) throws UserDefinedException {
             for(Inventory inv: inventories){
                 if(inv.getId() == id && inv.getNumber() > 0){
                     inv.setNumber(inv.getNumber()+number);
@@ -61,6 +61,19 @@ public class MockDB implements IPersistence {
     @Override
     public void disconnectDB() throws UserDefinedException {
 
+    }
+
+    @Override
+    public int getSum() throws UserDefinedException {
+        return 5;
+    }
+
+    @Override
+    public List<String> borrowedBookLists(String userName) throws UserDefinedException {
+        List<String> list = new ArrayList<>();
+        list.add("test book1");
+        list.add("test book2");
+        return list;
     }
 
     private boolean check(String name, String pw,List<String[]> people) {

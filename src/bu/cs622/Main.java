@@ -96,14 +96,15 @@ public class Main {
         people = new UserType(new Admin("Admin","123", db, PeopleType.ADMIN));
         while(true){
             try {
-                System.out.println("Please type 1 for checking inventory, type 2 for adding new inventory, type 3 for backing to main menu");
+                System.out.println("Please type 1 for checking inventory, type 2 for adding new inventory, type 3 for check the number of inventory, type 4 for backing to main menu");
                 String input = reader.readLine();
                 if(input.equals("1")){
                     printInventory();
                 }else if(input.equals("2")){
                     addInventory(reader);
-                }
-                else if(input .equals("3")){
+                }else if(input.equals("3")){
+                    checkSum();
+                } else if(input .equals("4")){
                     break;
                 }else{
                     System.out.println("Your input is not correct, please try again");
@@ -131,7 +132,6 @@ public class Main {
                 e.printStackTrace();
             }
 
-
             if(type != null && name != null && number != null){
                 try {
                     db.addInventory(name,number, type);
@@ -146,6 +146,14 @@ public class Main {
             }
         }
 
+    }
+
+    private void checkSum() {
+        try {
+           System.out.println(people.getSum());
+        } catch (UserDefinedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void userLogin(BufferedReader reader) {
@@ -165,12 +173,15 @@ public class Main {
     private void userMenu(BufferedReader reader) {
         try {
             while (true) {
-                System.out.println("Please type 1 for checking inventory, borrowing book or returning book, type 2 for exiting the system");
+                System.out.println("Please type 1 for checking inventory, borrowing book or returning book, type 2 for checking borrowed books, type 3 for exiting the system");
                 String input = reader.readLine();
                 if (input.equals("1")) {
                     printInventory();
                     borrowReturnBookMenu(reader);
                 } else if (input.equals("2")) {
+                    System.out.println(people.checkBorrowedBooks());
+                }
+                else if (input.equals("3")) {
                     break;
                 } else {
                     System.out.println("Your input is not correct, please try again");
@@ -178,6 +189,8 @@ public class Main {
             }
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UserDefinedException e) {
             e.printStackTrace();
         }
     }

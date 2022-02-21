@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class Admin extends People {
 
-    private int curId = 0;
+
     public Admin(String userName, String password, IPersistence idb, PeopleType type) {
         super(userName, password, idb, type);
     }
@@ -21,11 +21,18 @@ public class Admin extends People {
                 sorted(Comparator.comparing(Inventory::getId)).
                 map(inv ->Arrays.asList(new String[]{String.valueOf(inv.getId()), inv.getName(),inv.getInventoryType().name(), String.valueOf(inv.getNumber())})).
                 collect(Collectors.toList());
-        curId = inventory.size();
         return inventory;
     }
 
+    @Override
+    public String getSum() throws UserDefinedException {
+        return String.format("There are %d books in the inventory", db.getSum());
+    }
 
+    @Override
+    public String borrowedBooks() throws UserDefinedException {
+        return "You have no right to this operation";
+    }
 
 
 }

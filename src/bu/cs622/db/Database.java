@@ -30,7 +30,7 @@ public class Database implements IPersistence {
 
     private List<Inventory> readInventory() throws UserDefinedException {
         List<Inventory> inventoryList = new ArrayList<>();
-        String sql = "SELECT * FROM INVENTORY";
+        String sql = "SELECT * FROM INVENTORY ORDER BY ID";
         try {
             ResultSet results = con.createStatement().executeQuery(sql);
             while(results.next()){
@@ -101,18 +101,18 @@ public class Database implements IPersistence {
 
 
     @Override
-    public void updateInventory(int id, int number) throws UserDefinedException {
+    public void updateInventory(int id, int number,String userName) throws UserDefinedException {
         ThreadToJoin thread = new ThreadToJoin();
         try{
             thread.start();
             thread.join();
-            updateFile(id, number);
+            updateFile(id, number, userName);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateFile(int id, int number) throws UserDefinedException {
+    private void updateFile(int id, int number, String userName) throws UserDefinedException {
         synchronized (this.con) {
             String sql = "SELECT NUMBER FROM INVENTORY WHERE ID = " + id ;
             try {
@@ -127,12 +127,37 @@ public class Database implements IPersistence {
                 int updateNumber = cur + number;
                 String update = "UPDATE INVENTORY SET NUMBER = '" + updateNumber + "' WHERE ID = " + id;
                 con.createStatement().executeUpdate(update);
+                if(number > 0){
+                    removeBookID(id, userName);
+                }else{
+                    addBookID(id, userName);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
                 throw new UserDefinedException("Create statement is failure");
             }
         }
 
+    }
+
+    private void removeBookID(int id, String userName) throws UserDefinedException {
+        String sql = "DELETE FROM BOOKED WHERE BOOK_ID=" + "'" + id + "' AND USER_NAME='" + userName +"'";
+        try {
+            con.createStatement().executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UserDefinedException("Add new user into database is failure");
+        }
+    }
+
+    private void addBookID(int id, String userName) throws UserDefinedException {
+        String sql = "INSERT INTO BOOKED (BOOK_ID, USER_NAME) VALUES ('" + id + "', '" + userName +"')";
+        try {
+            con.createStatement().executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UserDefinedException("Add new user into database is failure");
+        }
     }
     @Override
     public void disconnectDB() throws UserDefinedException {
@@ -143,6 +168,40 @@ public class Database implements IPersistence {
             throw new UserDefinedException("Close the database is failure");
         }
     }
+
+    @Override
+    public int getSum() throws UserDefinedException {
+        String sql = "SELECT SUM (NUMBER) FROM INVENTORY" ;
+        try {
+            ResultSet results = con.createStatement().executeQuery(sql);
+            int cur = 0;
+            while(results.next()){
+                cur += results.getInt(1);
+            }
+            return cur;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UserDefinedException("Create statement is failure");
+        }
+    }
+
+
+    @Override
+    public List<String> borrowedBookLists(String userName) throws UserDefinedException {
+        List<String> list = new ArrayList<>();
+        String sql = "SELECT INVENTORY.NAME FROM INVENTORY INNER JOIN BOOKED ON INVENTORY.ID = BOOKED.BOOK_ID WHERE BOOKED.USER_NAME = '" + userName +"'";
+        try {
+            ResultSet results = con.createStatement().executeQuery(sql);
+            while(results.next()){
+                list.add(results.getString(1));
+            }
+            return list;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UserDefinedException("Create statement is failure");
+        }
+    }
+
     private void connectDB() throws UserDefinedException {
         try {
             con = DriverManager.getConnection(url);
@@ -162,7 +221,7 @@ public class Database implements IPersistence {
             con.createStatement().executeUpdate(createTableTwo);
             String createTableThree = "CREATE TABLE IF NOT EXISTS USER (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(255), PASSWORD VARCHAR(255))";
             con.createStatement().executeUpdate(createTableThree);
-            String createTableFour = "CREATE TABLE IF NOT EXISTS BOOKED (ID INTEGER PRIMARY KEY AUTOINCREMENT, BOOK_NAME VARCHAR(255), USER_NAME VARCHAR(255))";
+            String createTableFour = "CREATE TABLE IF NOT EXISTS BOOKED (ID INTEGER PRIMARY KEY AUTOINCREMENT, BOOK_ID INTEGER, USER_NAME VARCHAR(255))";
             con.createStatement().executeUpdate(createTableFour);
         } catch (SQLException e) {
             e.printStackTrace();

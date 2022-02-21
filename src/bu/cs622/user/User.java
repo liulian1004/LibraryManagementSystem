@@ -25,6 +25,20 @@ public class User extends People {
                 collect(Collectors.toList());
     }
 
+    @Override
+    public String getSum() {
+        return "User has no right to this operation!";
+    }
+
+    @Override
+    public String borrowedBooks() throws UserDefinedException {
+        List<String> list = db.borrowedBookLists(getUserName());
+        String res = "You have borrowed following books: \n";
+        for(String s: list){
+            res = res + s + ",";
+        }
+        return res.substring(0, res.length()-1);
+    }
 
 
 }

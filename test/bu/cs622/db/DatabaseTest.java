@@ -22,20 +22,20 @@ public class DatabaseTest {
         db= new Database("inventory_copy.txt");
     }
     @Test
-    void updateInventoryTest() throws UserDefinedException {
-        for(int i = 0; i < 10; i++){
-            db.updateInventory(1,1);
-            db.updateInventory(1,-1);
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            List<Inventory> list = db.getInventoryList();
-            Assert.assertEquals(10, list.get(0).getNumber());
-            resetDB();
-        }
-    }
+//    void updateInventoryTest() throws UserDefinedException {
+//        for(int i = 0; i < 10; i++){
+//            db.updateInventory(1,1);
+//            db.updateInventory(1,-1);
+//            try {
+//                Thread.sleep(5000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            List<Inventory> list = db.getInventoryList();
+//            Assert.assertEquals(10, list.get(0).getNumber());
+//            resetDB();
+//        }
+//    }
 
     private void resetDB() throws UserDefinedException {
         try{

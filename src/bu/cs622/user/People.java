@@ -31,13 +31,15 @@ public abstract class People {
     }
 
     public abstract List<List<String>> getInventory() throws UserDefinedException;
+    public abstract String getSum() throws UserDefinedException;
+    public abstract String borrowedBooks() throws UserDefinedException;
 
     public void borrowBook(int id, int number) throws UserDefinedException {
-        db.updateInventory(id, number);
+        db.updateInventory(id, number, getUserName());
     };
 
     public void returnBook(int id, int number) throws UserDefinedException {
-        db.updateInventory(id, number);
+        db.updateInventory(id, number, getUserName());
     };
 }
 
