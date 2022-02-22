@@ -66,7 +66,7 @@ public class Database implements IPersistence {
             con.createStatement().executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new UserDefinedException("Add new user into database is failure");
+            throw new UserDefinedException("Add new inventory into database is failure");
         }
     }
 
@@ -159,7 +159,7 @@ public class Database implements IPersistence {
             con.createStatement().executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new UserDefinedException("Add new user into database is failure");
+            throw new UserDefinedException("Add new borrow booked info into database is failure");
         }
     }
     @Override
