@@ -19,9 +19,9 @@ public class DatabaseTest {
 
     @BeforeEach
     void setUp() throws UserDefinedException {
-        db= new Database("inventory_copy.txt");
+        db= new Database();
     }
-    @Test
+   // @Test
 //    void updateInventoryTest() throws UserDefinedException {
 //        for(int i = 0; i < 10; i++){
 //            db.updateInventory(1,1);
@@ -37,31 +37,31 @@ public class DatabaseTest {
 //        }
 //    }
 
-    private void resetDB() throws UserDefinedException {
-        try{
-            File file = new File("inventory_copy.txt");
-            Gson gson = new Gson();
-                StringBuffer buffer = new StringBuffer();
-                Scanner reader = new Scanner(file);
-                while(reader.hasNextLine()){
-                    String oldLine = reader.nextLine();
-                    Inventory inv = gson.fromJson(oldLine, Inventory.class);
-                    if(inv != null && inv.getId() == 1) {
-                        inv.setNumber(10);
-                        String newLine = gson.toJson(inv);
-                        buffer.append(newLine);
-                    }else{
-                        buffer.append(oldLine);
-                    }
-                    buffer.append('\n');
-                }
-                reader.close();
-                FileWriter writer = new FileWriter("inventory_copy.txt");
-                writer.write(buffer.toString());
-                writer.close();
-
-        }catch (Exception e){
-            throw new UserDefinedException("File does not exist");
-        }
-    }
+//    private void resetDB() throws UserDefinedException {
+//        try{
+//            File file = new File();
+//            Gson gson = new Gson();
+//                StringBuffer buffer = new StringBuffer();
+//                Scanner reader = new Scanner(file);
+//                while(reader.hasNextLine()){
+//                    String oldLine = reader.nextLine();
+//                    Inventory inv = gson.fromJson(oldLine, Inventory.class);
+//                    if(inv != null && inv.getId() == 1) {
+//                        inv.setNumber(10);
+//                        String newLine = gson.toJson(inv);
+//                        buffer.append(newLine);
+//                    }else{
+//                        buffer.append(oldLine);
+//                    }
+//                    buffer.append('\n');
+//                }
+//                reader.close();
+//                FileWriter writer = new FileWriter("inventory_copy.txt");
+//                writer.write(buffer.toString());
+//                writer.close();
+//
+//        }catch (Exception e){
+//            throw new UserDefinedException("File does not exist");
+//        }
+//    }
 }

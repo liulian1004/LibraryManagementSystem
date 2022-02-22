@@ -22,7 +22,7 @@ public class Database implements IPersistence {
     private Connection con;
     private final String  url = "jdbc:sqlite:Library.db";
 
-    public Database(String fileName) throws UserDefinedException {
+    public Database() throws UserDefinedException {
         connectDB();
         //gson = new Gson();
         //inventoryFile = new File(fileName);;
@@ -34,7 +34,10 @@ public class Database implements IPersistence {
         try {
             ResultSet results = con.createStatement().executeQuery(sql);
             while(results.next()){
-                Inventory inv = new Inventory(results.getInt(1),results.getString(2), results.getInt(3), InventoryType.valueOf(results.getString(4)));
+                Inventory inv = new Inventory(results.getInt(1),
+                        results.getString(2),
+                        results.getInt(3),
+                        InventoryType.valueOf(results.getString(4)));
                 inventoryList.add(inv);;
             }
         } catch (SQLException e) {
@@ -189,7 +192,8 @@ public class Database implements IPersistence {
     @Override
     public List<String> borrowedBookLists(String userName) throws UserDefinedException {
         List<String> list = new ArrayList<>();
-        String sql = "SELECT INVENTORY.NAME FROM INVENTORY INNER JOIN BOOKED ON INVENTORY.ID = BOOKED.BOOK_ID WHERE BOOKED.USER_NAME = '" + userName +"'";
+        String sql = "SELECT INVENTORY.NAME FROM INVENTORY INNER JOIN BOOKED " +
+                "ON INVENTORY.ID = BOOKED.BOOK_ID WHERE BOOKED.USER_NAME = '" + userName +"'";
         try {
             ResultSet results = con.createStatement().executeQuery(sql);
             while(results.next()){
@@ -215,13 +219,17 @@ public class Database implements IPersistence {
     }
     private void createTable() throws UserDefinedException {
         try {
-            String createTableOne = "CREATE TABLE IF NOT EXISTS INVENTORY (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(255), NUMBER INTEGER, TYPE VARCHAR(255))";
+            String createTableOne = "CREATE TABLE IF NOT EXISTS INVENTORY " +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(255), NUMBER INTEGER, TYPE VARCHAR(255))";
             con.createStatement().executeUpdate(createTableOne);
-            String createTableTwo = "CREATE TABLE IF NOT EXISTS ADMIN (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(255), PASSWORD VARCHAR(255))";
+            String createTableTwo = "CREATE TABLE IF NOT EXISTS ADMIN " +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(255), PASSWORD VARCHAR(255))";
             con.createStatement().executeUpdate(createTableTwo);
-            String createTableThree = "CREATE TABLE IF NOT EXISTS USER (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(255), PASSWORD VARCHAR(255))";
+            String createTableThree = "CREATE TABLE IF NOT EXISTS USER " +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(255), PASSWORD VARCHAR(255))";
             con.createStatement().executeUpdate(createTableThree);
-            String createTableFour = "CREATE TABLE IF NOT EXISTS BOOKED (ID INTEGER PRIMARY KEY AUTOINCREMENT, BOOK_ID INTEGER, USER_NAME VARCHAR(255))";
+            String createTableFour = "CREATE TABLE IF NOT EXISTS BOOKED " +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT, BOOK_ID INTEGER, USER_NAME VARCHAR(255))";
             con.createStatement().executeUpdate(createTableFour);
         } catch (SQLException e) {
             e.printStackTrace();

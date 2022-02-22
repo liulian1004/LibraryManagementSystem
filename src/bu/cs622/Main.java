@@ -301,7 +301,7 @@ public class Main {
 
     public void connectDB() {
         try {
-            db = new Database("database");
+            db = new Database();
         } catch (UserDefinedException e) {
             e.printErrorMessage();
             e.printStackTrace();
